@@ -13,15 +13,17 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL15.*;
 
 
 public class Engine {
 
 	// The window handle
-	private long window;
+	long window;
+
+	public int textureIndex;
 
 	public void run() {
+		textureIndex = 1;
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
 		init();
@@ -35,7 +37,7 @@ public class Engine {
 		glfwTerminate();
 	}
 
-	private void init() {
+	void init() {
 
 		if ( !glfwInit() )
 		{
@@ -48,7 +50,7 @@ public class Engine {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 
-		window = glfwCreateWindow(800, 800, "OOGA BOOGA", NULL, NULL);
+		window = glfwCreateWindow(700, 700, "OOGA BOOGA", NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -114,17 +116,20 @@ public class Engine {
 
 		System.out.println(s.shaderProgram);*/
 
-		Texture tex = new Texture("/home/adminq/Documents/Game/src/main/resources/texture.png");
-
+		Texture tex = new Texture("/home/adminq/Documents/Game/src/main/resources/maple.png", this);
+		Texture text = new Texture("/home/adminq/Documents/Game/src/main/resources/texture.png", this);
+		Texture gun = new Texture("/home/adminq/Documents/Game/src/main/resources/gun.png", this);
 
 		while ( !glfwWindowShouldClose(window) ) {
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClearColor(0.2f, 0.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 			// glUseProgram(s.shaderProgram);
 			// glBindVertexArray(vao);
 			// glDrawElements(GL_TRIANGLES,6, GL_UNSIGNED_INT, 0);
 			// /glDrawArrays(GL_TRIANGLES, 0, 3);
-			tex.render();
+			tex.render(-100, 0, 1252, 486);
+			text.render(-400, -400, 200, 200);
+			gun.render(0, 0, 800, 800);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}

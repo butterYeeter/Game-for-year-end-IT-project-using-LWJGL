@@ -1,10 +1,11 @@
 package org.example;
 
+
 public class Main 
 {
-    public static void main(String[] args)
+    public static void main(String args[])
     {
-        Engine e = new Engine();
-        e.run();
-    }    
+        Engine en = new Engine();
+        en.run();
+    }
 }
