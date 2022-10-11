@@ -7,29 +7,24 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 public class Main
 {
-    public static void main(String args[]) throws IOException
-    {
+    public static void main(String args[]) throws IOException {
         Engine en = new Engine();
         en.init(800, 800);
-       // en.render();
-       // en.init(800, 800);
-        //Texture tex = new Texture("/home/adminq/Documents/Game/src/main/resources/maple.png", en);
-        Texture tex = new Texture("/home/adminq/Downloads/Game/src/main/resources/texture.png", en);
 
-        //en.run();
+		Texture gun = new Texture("src/main/resources/player_walk1.png", en);
+		Texture gun2 = new Texture("src/main/resources/texture.png", en);
+		Texture gun3 = new Texture("src/main/resources/player_walk1.png", en);
 
-        while ( !glfwWindowShouldClose(en.window) ) {
-            glClearColor(0.2f, 0.0f, 1.0f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-            // glUseProgram(s.shaderProgram);
-            // glBindVertexArray(vao);
-            // glDrawElements(GL_TRIANGLES,6, GL_UNSIGNED_INT, 0);
-            // /glDrawArrays(GL_TRIANGLES, 0, 3);
-            tex.render(-100, -100, 400, 400);
-            //text.render(-400, -400, 200, 200);
-            //gun.render(0, 0, 800, 800);
-            glfwSwapBuffers(en.window);
-            glfwPollEvents();
-        }
+		while (en.windowOpen()) {
+            en.clear(0.0f, 0.0f, 0.0f);
+
+			gun.render(0, 0, 400, 400);
+			gun2.render(100, 0, 400, 400);
+			gun3.render(200, 0, 400, 400);
+
+            en.update();
+		}
+		glfwDestroyWindow(en.window);
+		glfwTerminate();
     }
 }
