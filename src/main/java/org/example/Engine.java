@@ -13,18 +13,20 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
-import static org.lwjgl.opengl.GL15.*;
 
 
 public class Engine {
 
 	// The window handle
-	private long window;
+	static long window;
 
+	public int textureIndex;
+	private int wWidth, wHeight;
 	public void run() {
+		textureIndex = 1;
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
-		init();
+		init(600, 600);
 		try {
 			render();
 		} catch (IOException e) {
@@ -35,8 +37,11 @@ public class Engine {
 		glfwTerminate();
 	}
 
-	private void init() {
+	void init(int wWidth, int wHeight)
+	{
 
+		this.wWidth = wWidth;
+		this.wHeight = wHeight;
 		if ( !glfwInit() )
 		{
 			System.out.println("Unable to initialize GLFW");
@@ -48,7 +53,7 @@ public class Engine {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 
-		window = glfwCreateWindow(800, 800, "OOGA BOOGA", NULL, NULL);
+		window = glfwCreateWindow(wWidth, wHeight  , "OOGA BOOGA", NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -60,74 +65,38 @@ public class Engine {
 
 
 		glfwMakeContextCurrent(window);
+		GL.createCapabilities();
 		// Enable v-sync
 		glfwSwapInterval(1);
 	}
 
-	private void render() throws IOException {
-		GL.createCapabilities();
+	public  void render() throws IOException {
 
-		/*float vertices[] = {
-			0.5f, -0.5f, 0.0f,			1.0f, 0.0f, 0.0f,
-			0.5f, 0.5f, 0.0f,			0.0f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.0f,			0.0f, 0.0f, 1.0f,
-			-0.5f, -0.5f, 0.0f,			0.3f, 0.0f, 0.8f
-		};
-
-		int indices[] = {0, 1, 2, 0, 2, 3};
-		
-
-		String vPath = "/home/adminq/Documents/Game/src/main/resources/vertex.glsl";
-		String fPath = "/home/adminq/Documents/Game/src/main/resources/fragment.glsl";
-
-		Shader s = new Shader(vPath, fPath);
-
-		int vbo, vao, ebo;
-
-		vao = glGenVertexArrays();
-		glBindVertexArray(vao);
-
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
-		vertexBuffer.put(vertices).flip();
-		
-		vbo = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-
-		IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-		indicesBuffer.put(indices).flip();
-
-		ebo = glGenBuffers();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-		
-		
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 24, 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 24, 12);
-		glEnableVertexAttribArray(1);
-
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-		System.out.println(s.shaderProgram);*/
-
-		Texture tex = new Texture("/home/adminq/Documents/Game/src/main/resources/texture.png");
-
+		int x = 0, y = 0;
+		//Texture tex = new Texture("/home/adminq/Documents/Game/src/main/resources/maple.png", this);
+		Texture text = new Texture("/home/adminq/Documents/Game/src/main/resources/texture.png", this);
+		Texture tex = new Texture("/home/adminq/Documents/Game/src/main/resources/texture.png", this);
+		//Texture gun = new Texture("/home/adminq/Documents/Game/src/main/resources/gun.png", this);
 
 		while ( !glfwWindowShouldClose(window) ) {
-			glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+			glClearColor(0.2f, 0.0f, 1.0f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 			// glUseProgram(s.shaderProgram);
 			// glBindVertexArray(vao);
 			// glDrawElements(GL_TRIANGLES,6, GL_UNSIGNED_INT, 0);
 			// /glDrawArrays(GL_TRIANGLES, 0, 3);
-			tex.render();
+			//tex.render(-100, 0, 1252, 486);
+			text.render(x, y, 200, 200);
+			//gun.render(0, 0, 800, 800);
 			glfwSwapBuffers(window);
 			glfwPollEvents();
+			if(glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) x += 10;
+			if(glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) x -= 10;
+			if(glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) y += 10;
+			if(glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) y -= 10;
 		}
+		glfwDestroyWindow(window);
+		glfwTerminate();
 	}
 
 	public static String loadAsString(String filePath) throws IOException {
@@ -135,4 +104,9 @@ public class Engine {
         String str = Files.readString(fileName);
         return str;
     }
+
+	public static boolean shouldWindowClose()
+	{
+		return glfwWindowShouldClose(window);
+	}
 }
