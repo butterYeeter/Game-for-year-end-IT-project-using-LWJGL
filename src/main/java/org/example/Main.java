@@ -7,7 +7,7 @@ import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
 
 public class Main
 {
-    public void run() throws IOException {
+    public static void main(String args[]) throws IOException {
         Engine en = new Engine();
         en.init(800, 800);
 
@@ -15,24 +15,16 @@ public class Main
 		Texture gun2 = new Texture("src/main/resources/texture.png", en);
 		Texture gun3 = new Texture("src/main/resources/player_walk1.png", en);
 
-		while ( !glfwWindowShouldClose(en.window) ) {
-			glClearColor(0.2f, 0.0f, 1.0f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+		while (en.windowOpen()) {
+            en.clear(0.0f, 0.0f, 0.0f);
 
-			
 			gun.render(0, 0, 400, 400);
 			gun2.render(100, 0, 400, 400);
 			gun3.render(200, 0, 400, 400);
 
-
-			glfwSwapBuffers(en.window);
-			glfwPollEvents();
+            en.update();
 		}
 		glfwDestroyWindow(en.window);
 		glfwTerminate();
-    }
-    public static void main(String args[]) throws IOException
-    {
-        new Main().run();
     }
 }

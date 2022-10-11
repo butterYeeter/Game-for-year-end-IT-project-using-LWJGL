@@ -22,7 +22,6 @@ public class Shader
             e.printStackTrace();
         }
         
-        System.out.println(fPath);
         int vShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vShader, vPath);
 		glCompileShader(vShader);
