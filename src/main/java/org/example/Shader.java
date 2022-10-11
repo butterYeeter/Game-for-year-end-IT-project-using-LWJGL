@@ -43,10 +43,10 @@ public class Shader
         return str;
     }
 
-    public void uploadTex(String varName)
+    public void uploadTex(String varName, int index)
     {
         int location = glGetUniformLocation(shaderProgram, varName);
         glUseProgram(shaderProgram);
-        glUniform1i(location, 1);
+        glUniform1i(location, 0);
     }
 }
