@@ -18,15 +18,15 @@ import static org.lwjgl.opengl.GL30.*;
 public class Engine {
 
 	// The window handle
-	long window;
+	static long window;
 
 	public int textureIndex;
-
+	private int wWidth, wHeight;
 	public void run() {
 		textureIndex = 1;
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
-		init();
+		init(600, 600);
 		try {
 			render();
 		} catch (IOException e) {
@@ -37,8 +37,11 @@ public class Engine {
 		glfwTerminate();
 	}
 
-	void init() {
+	void init(int wWidth, int wHeight)
+	{
 
+		this.wWidth = wWidth;
+		this.wHeight = wHeight;
 		if ( !glfwInit() )
 		{
 			System.out.println("Unable to initialize GLFW");
@@ -50,7 +53,7 @@ public class Engine {
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 
-		window = glfwCreateWindow(700, 700, "OOGA BOOGA", NULL, NULL);
+		window = glfwCreateWindow(wWidth, wHeight  , "OOGA BOOGA", NULL, NULL);
 		if ( window == NULL )
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -62,59 +65,13 @@ public class Engine {
 
 
 		glfwMakeContextCurrent(window);
+		GL.createCapabilities();
 		// Enable v-sync
 		glfwSwapInterval(1);
 	}
 
-	private void render() throws IOException {
-		GL.createCapabilities();
+	public  void render() throws IOException {
 
-		/*float vertices[] = {
-			0.5f, -0.5f, 0.0f,			1.0f, 0.0f, 0.0f,
-			0.5f, 0.5f, 0.0f,			0.0f, 1.0f, 0.0f,
-			-0.5f, 0.5f, 0.0f,			0.0f, 0.0f, 1.0f,
-			-0.5f, -0.5f, 0.0f,			0.3f, 0.0f, 0.8f
-		};
-
-		int indices[] = {0, 1, 2, 0, 2, 3};
-		
-
-		String vPath = "/home/adminq/Documents/Game/src/main/resources/vertex.glsl";
-		String fPath = "/home/adminq/Documents/Game/src/main/resources/fragment.glsl";
-
-		Shader s = new Shader(vPath, fPath);
-
-		int vbo, vao, ebo;
-
-		vao = glGenVertexArrays();
-		glBindVertexArray(vao);
-
-		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
-		vertexBuffer.put(vertices).flip();
-		
-		vbo = glGenBuffers();
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
-
-		IntBuffer indicesBuffer = BufferUtils.createIntBuffer(indices.length);
-		indicesBuffer.put(indices).flip();
-
-		ebo = glGenBuffers();
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
-		
-		
-		glVertexAttribPointer(0, 3, GL_FLOAT, false, 24, 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 3, GL_FLOAT, false, 24, 12);
-		glEnableVertexAttribArray(1);
-
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindVertexArray(0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-		System.out.println(s.shaderProgram);*/
 
 		Texture tex = new Texture("/home/adminq/Documents/Game/src/main/resources/maple.png", this);
 		Texture text = new Texture("/home/adminq/Documents/Game/src/main/resources/texture.png", this);
@@ -133,6 +90,8 @@ public class Engine {
 			glfwSwapBuffers(window);
 			glfwPollEvents();
 		}
+		glfwDestroyWindow(window);
+		glfwTerminate();
 	}
 
 	public static String loadAsString(String filePath) throws IOException {
@@ -140,4 +99,9 @@ public class Engine {
         String str = Files.readString(fileName);
         return str;
     }
+
+	public static boolean shouldWindowClose()
+	{
+		return glfwWindowShouldClose(window);
+	}
 }
