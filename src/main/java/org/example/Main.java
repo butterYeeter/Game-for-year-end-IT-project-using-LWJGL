@@ -11,9 +11,9 @@ public class Main
         Engine en = new Engine();
         en.init(800, 800);
 
-		Texture gun = new Texture("/home/scriptline/Game-for-year-end-IT-project-using-LWJGL/src/main/resources/player_walk1.png", en);
-		Texture gun2 = new Texture("/home/scriptline/Game-for-year-end-IT-project-using-LWJGL/src/main/resources/texture.png", en);
-		Texture gun3 = new Texture("/home/scriptline/Game-for-year-end-IT-project-using-LWJGL/src/main/resources/texture.png", en);
+		Texture gun = new Texture("src/main/resources/player_walk1.png", en);
+		Texture gun2 = new Texture("src/main/resources/texture.png", en);
+		Texture gun3 = new Texture("src/main/resources/player_walk1.png", en);
 
 		while ( !glfwWindowShouldClose(en.window) ) {
 			glClearColor(0.2f, 0.0f, 1.0f, 1.0f);
@@ -21,6 +21,10 @@ public class Main
 
 			
 			gun.render(0, 0, 400, 400);
+			gun2.render(100, 0, 400, 400);
+			gun3.render(200, 0, 400, 400);
+
+
 			glfwSwapBuffers(en.window);
 			glfwPollEvents();
 		}

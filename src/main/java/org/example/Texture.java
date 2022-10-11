@@ -14,8 +14,8 @@ import static org.lwjgl.stb.STBImage.stbi_load;
 
 public class Texture 
 {
-    String vPath = "/home/scriptline/Game-for-year-end-IT-project-using-LWJGL/src/main/resources/vertex.glsl";
-	String fPath = "/home/scriptline/Game-for-year-end-IT-project-using-LWJGL/src/main/resources/fragment.glsl";
+    String vPath = "src/main/resources/vertex.glsl";
+	String fPath = "src/main/resources/fragment.glsl";
     public Shader s;
 
     public int index;
