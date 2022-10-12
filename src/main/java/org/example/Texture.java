@@ -11,25 +11,28 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 import static org.lwjgl.stb.STBImage.*;
 import static org.lwjgl.stb.STBImage.stbi_load;
-import static org.lwjgl.stb.STBImageResize.*;
 
 public class Texture 
 {
-    String vPath = "/home/adminq/Documents/Game/src/main/resources/vertex.glsl";
-	String fPath = "/home/adminq/Documents/Game/src/main/resources/fragment.glsl";
-    Shader s;
+    String vPath = "src/main/resources/vertex.glsl";
+	String fPath = "src/main/resources/fragment.glsl";
+    public Shader s;
+    Engine en;
 
     public int index;
-    Texture(String imgPath, Engine engine) throws IOException
-    {
+    Texture(String imgPath, Engine engine) throws IOException {
         index = engine.textureIndex;
+        en = engine;
         engine.textureIndex += 1;
+
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         s = new Shader(vPath, fPath);
+
         int texID = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, texID);
+
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -38,8 +41,8 @@ public class Texture
         IntBuffer width = BufferUtils.createIntBuffer(1);
         IntBuffer height = BufferUtils.createIntBuffer(1);
         IntBuffer channels = BufferUtils.createIntBuffer(1);
-
         ByteBuffer image = stbi_load(imgPath, width, height, channels, 0);
+
         if (image != null) {
             if (channels.get(0) == 3) 
             {
@@ -54,21 +57,20 @@ public class Texture
         } else {
             assert false : "Error: (Texture) Could not load image '" + imgPath + "'";
         }
-
-        glActiveTexture(GL_TEXTURE1);
-        s.uploadTex("tex0");
+        glActiveTexture(GL_TEXTURE0);
+        s.uploadTex("tex0", 0);
     }
 
     public void render(float _x, float _y, float width, float height) {
 
-        float x = _x / 400;
-        float y = _y / 400;
+        float x = _x / en.wWidth / 2;
+        float y = _y / en.wHeight / 2;
 
         float vertices[] = {
-                x,                 y + (height / 800), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 0.0f,
+                x,                 y + (height / en.wHeight), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 0.0f,
                 x,                 y,                  0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 1.0f,
-                x + (width / 800), y,                  0.0f ,          0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 1.0f,
-                x + (width / 800), y + (height / 800), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 0.0f
+                x + (width / en.wWidth), y,                  0.0f ,          0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 1.0f,
+                x + (width / en.wWidth), y + (height / en.wHeight), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 0.0f
         };
 
         int[] indices = {
@@ -109,7 +111,7 @@ public class Texture
         glEnableVertexAttribArray(2);
 
         glUseProgram(s.shaderProgram);
-        glBindTexture(GL_TEXTURE_2D, index);
+        glBindTexture(GL_TEXTURE_2D, index + 1);
         glBindVertexArray(vao);
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);

@@ -22,7 +22,6 @@ public class Shader
             e.printStackTrace();
         }
         
-        System.out.println(fPath);
         int vShader = glCreateShader(GL_VERTEX_SHADER);
 		glShaderSource(vShader, vPath);
 		glCompileShader(vShader);
@@ -43,10 +42,10 @@ public class Shader
         return str;
     }
 
-    public void uploadTex(String varName)
+    public void uploadTex(String varName, int index)
     {
         int location = glGetUniformLocation(shaderProgram, varName);
         glUseProgram(shaderProgram);
-        glUniform1i(location, 1);
+        glUniform1i(location, 0);
     }
 }
