@@ -20,9 +20,7 @@ public class Main
 	public static void main(String args[]) throws IOException, ParseException, FileNotFoundException {
 		double[] pos;
         en.init(600, 600);
-		//Texture cursor = new Texture("src/main/resources/cursor.png", en);
 		Player p1 = new Player(en);
-		int x = 0, y = 0;
 
 		en.createCursor("src/main/resources/assets/cursor.png");
 
@@ -32,11 +30,9 @@ public class Main
 		while (en.windowOpen()) {
 			en.clear(0.0f, 0.0f, 0.0f);
 
-			for(Object[] tile : map)
-			{
+			for(Object[] tile : map) {
 				square.render((float)tile[0] - 2000 - p1.camera[0], (float)tile[1] + 1500 - p1.camera[1], 64, 64, false);
 			}
-
 
 			p1.update(map);
             en.update();
