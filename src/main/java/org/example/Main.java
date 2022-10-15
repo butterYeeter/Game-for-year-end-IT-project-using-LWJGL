@@ -1,27 +1,44 @@
 package org.example;
 
+import org.json.simple.parser.ParseException;
+import org.lwjgl.BufferUtils;
+import org.lwjgl.glfw.GLFWImage;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.DoubleBuffer;
+import java.nio.IntBuffer;
+import java.util.List;
+
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL11.GL_DEPTH_BUFFER_BIT;
+import static org.lwjgl.stb.STBImage.stbi_load;
 
 public class Main
 {
-    public static void main(String args[]) throws IOException {
-        Engine en = new Engine();
-        en.init(800, 800);
+	static 	Engine en = new Engine();
+	public static void main(String args[]) throws IOException, ParseException, FileNotFoundException {
+		double[] pos;
+        en.init(600, 600);
+		//Texture cursor = new Texture("src/main/resources/cursor.png", en);
+		Player p1 = new Player(en);
+		int x = 0, y = 0;
 
-		Texture gun = new Texture("src/main/resources/player_walk1.png", en);
-		Texture gun2 = new Texture("src/main/resources/texture.png", en);
-		Texture gun3 = new Texture("src/main/resources/player_walk1.png", en);
+		en.createCursor("src/main/resources/assets/cursor.png");
+
+		List<Object[]> map = en.mapLoad(Json.parse());
+		Texture square = new Texture("src/main/resources/assets/tile01.png", en);
 
 		while (en.windowOpen()) {
-            en.clear(0.0f, 0.0f, 0.0f);
+			en.clear(0.0f, 0.0f, 0.0f);
 
-			gun.render(0, 0, 400, 400);
-			gun2.render(100, 0, 400, 400);
-			gun3.render(200, 0, 400, 400);
+			for(Object[] tile : map)
+			{
+				square.render((float)tile[0] - 2000 - p1.camera[0], (float)tile[1] + 1500 - p1.camera[1], 64, 64, false);
+			}
 
+
+			p1.update(map);
             en.update();
 		}
 		glfwDestroyWindow(en.window);

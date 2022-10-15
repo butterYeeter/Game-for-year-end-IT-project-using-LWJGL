@@ -17,10 +17,13 @@ public class Texture
     String vPath = "src/main/resources/vertex.glsl";
 	String fPath = "src/main/resources/fragment.glsl";
     public Shader s;
+    Engine en;
+    int vao, vbo, ebo;
 
     public int index;
     Texture(String imgPath, Engine engine) throws IOException {
         index = engine.textureIndex;
+        en = engine;
         engine.textureIndex += 1;
 
         glEnable(GL_BLEND);
@@ -55,41 +58,37 @@ public class Texture
         } else {
             assert false : "Error: (Texture) Could not load image '" + imgPath + "'";
         }
-        glActiveTexture(GL_TEXTURE0);
-        s.uploadTex("tex0", 0);
-    }
 
-    public void render(float _x, float _y, float width, float height) {
+        float x = 0;
+        float y = 0;
 
-        float x = _x / 400;
-        float y = _y / 400;
-
-        float vertices[] = {
-                x,                 y + (height / 800), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 0.0f,
-                x,                 y,                  0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 1.0f,
-                x + (width / 800), y,                  0.0f ,          0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 1.0f,
-                x + (width / 800), y + (height / 800), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 0.0f
+        vertices = new float[]{
+                x, y , 0.0f,                                 0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 0.0f,
+                x, y, 0.0f,                                                         0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 1.0f,
+                x, y, 0.0f ,                                  0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 1.0f,
+                x, y, 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 0.0f
         };
+
 
         int[] indices = {
                 0, 2, 1,
                 0, 3, 2,
         };
 
-        int vao = glGenVertexArrays();
+        vao = glGenVertexArrays();
         glBindVertexArray(vao);
 
         FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
         vertexBuffer.put(vertices).flip();
 
-        int vbo = glGenBuffers();
+         vbo = glGenBuffers();
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
 
         IntBuffer elementBuffer = BufferUtils.createIntBuffer(indices.length);
         elementBuffer.put(indices).flip();
 
-        int ebo = glGenBuffers();
+         ebo = glGenBuffers();
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
 
@@ -108,9 +107,55 @@ public class Texture
         glVertexAttribPointer(2, texCoordSize, GL_FLOAT, false, vertexSizeBytes, (positionsSize + colorSize) * Float.BYTES);
         glEnableVertexAttribArray(2);
 
+
+        glActiveTexture(GL_TEXTURE0);
+        s.uploadTex("tex0", 0);
+    }
+
+
+    float vertices[];
+    public void render(float _x, float _y, float width, float height, boolean flip) {
+
+        float x = _x / en.wWidth / 2;
+        float y = _y / en.wHeight / 2;
+
+        vertices = new float[]{
+                x, y + (height / en.wHeight), 0.0f,                                 0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 0.0f,
+                x, y, 0.0f,                                                         0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 1.0f,
+                x + (width / en.wWidth), y, 0.0f ,                                  0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 1.0f,
+                x + (width / en.wWidth), y + (height / en.wHeight), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 0.0f
+        };
+
+        if(flip) {
+            vertices = new float[] {
+                    x, y + (height / en.wHeight), 0.0f,                                 0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 0.0f,
+                    x, y, 0.0f,                                                         0.0f, 0.0f, 0.0f, 0.0f,           1.0f, 1.0f,
+                    x + (width / en.wWidth), y, 0.0f ,                                  0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 1.0f,
+                    x + (width / en.wWidth), y + (height / en.wHeight), 0.0f,           0.0f, 0.0f, 0.0f, 0.0f,           0.0f, 0.0f
+            };
+        }
+
+        int[] indices = {
+                0, 2, 1,
+                0, 3, 2,
+        };
+
+        glBindVertexArray(vao);
+
+        FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(vertices.length);
+        vertexBuffer.put(vertices).flip();
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW);
+
+        IntBuffer elementBuffer = BufferUtils.createIntBuffer(indices.length);
+        elementBuffer.put(indices).flip();
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, elementBuffer, GL_STATIC_DRAW);
+
         glUseProgram(s.shaderProgram);
         glBindTexture(GL_TEXTURE_2D, index + 1);
-        glBindVertexArray(vao);
 
         glDrawElements(GL_TRIANGLES, indices.length, GL_UNSIGNED_INT, 0);
     }

@@ -38,6 +38,7 @@ dependencies {
     implementation "org.lwjglx:lwjgl3-awt:0.1.8"
     implementation "com.code-disaster.steamworks4j:steamworks4j:1.9.0"
     implementation "com.code-disaster.steamworks4j:steamworks4j-server:1.9.0"
+    implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
 test {
