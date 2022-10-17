@@ -27,6 +27,7 @@ public class Player
     float x, y;
     boolean s = false;
     boolean d = false;
+    boolean flip = false;
     float movex, movey;
     float[] rect1 = {0, 0, 400, 400};
     float[] rect2 = new float[]{0, 0, 400, 400};
@@ -41,21 +42,33 @@ public class Player
             movey = 12;
             s = false;
             d = false;
+            flip = false;
         }
         if(glfwGetKey(en.window, GLFW_KEY_S) == GLFW_PRESS) {
             movey = -12;
             s = true;
             d = false;
+            flip = false;
         }
         if(glfwGetKey(en.window, GLFW_KEY_A) == GLFW_PRESS) {
             movex = -12;
-            d = false;
+            d = true;
             s = false;
+            flip = true;
         }
         if(glfwGetKey(en.window, GLFW_KEY_D) == GLFW_PRESS) {
             movex = 12;
             s = false;
             d = true;
+            flip = false;
+        }
+
+        if(glfwGetKey(en.window, GLFW_KEY_D) == 0 &&
+                glfwGetKey(en.window, GLFW_KEY_W) == 0 &&
+                glfwGetKey(en.window, GLFW_KEY_S) == 0 &&
+                glfwGetKey(en.window, GLFW_KEY_A) == 0){
+            s = false;
+            d = false;
         }
 
         //rect1[0] -= 1f;
@@ -68,7 +81,7 @@ public class Player
         }else currentAnimation = ap.idle;
 
         if(textureIndex + 1 >= currentAnimation.length * 6) textureIndex = 0;
-        currentAnimation[textureIndex / 6].render(x - camera[0], y - camera[1], 80, 115, false);
+        currentAnimation[textureIndex / 6].render(x - camera[0], y - camera[1], 85 / 1.2f, 135 / 1.2f, flip);
         textureIndex++;
     }
 
@@ -102,11 +115,11 @@ public class Player
     private List<Object[]> getCollisions(List<Object[]> map)
     {
         List<Object[]> collidingTiles = new ArrayList<Object[]>();
-        float[] playerBoundingBox = {x, y, 80, 115};
+        float[] playerBoundingBox = {x, y, 85, 135};
         for(Object[] pos:map)
         {
-            float[] tileBoundingBox = new float[]{(float)pos[0] - 2000, (float)pos[1] + 1500, 64, 64};
-            if(aabb(playerBoundingBox, tileBoundingBox))
+            float[] tileBoundingBox = new float[]{(float)pos[0], (float)pos[1] , 64, 64};
+            if(aabb(playerBoundingBox, tileBoundingBox) && !(pos[2].equals("tile22.png")) && !(pos[2].equals("tile21.png")))
             {   
                 collidingTiles.add(pos);
             }
@@ -119,13 +132,13 @@ public class Player
 
         x += mx;
         List<Object[]> collidingTiles = getCollisions(world);
-        System.out.println(collidingTiles.size());
+//        System.out.println(collidingTiles.size());
         for (Object[] pos:collidingTiles) {
             if (mx > 0) { //right: x > 0 playerMovement: [-3, 0]
-                x = (float)pos[0] - 2000 - 80;
+                x = (float)pos[0] - 90;
             }
             else if (mx < 0) { //left: x < 0
-                x = (float)pos[0] - 2000 + 74;
+                x = (float)pos[0] + 74;
             }
         }
 
@@ -134,10 +147,10 @@ public class Player
         collidingTiles = getCollisions(world);
         for (Object[] pos:collidingTiles) {
             if (my > 0) {
-                y = (float)pos[1] + 1500 - 115;
+                y = (float)pos[1] - 135;
             }
             else if (my < 0) {
-                y = (float)pos[1] + 1500 + 64;
+                y = (float)pos[1] + 64;
             }
         }
     }

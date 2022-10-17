@@ -91,7 +91,7 @@ public class Engine {
 		{
 			fps = 1.0 / deltaT * counter;
 			//fps = Math.round((fps * 10000)) / 10000;
-			title = "OOGA BOOGA\t" + fps;
+			title = "wow a game\t" + fps;
 			glfwSetWindowTitle(window, title);
 			lastTime = crntTime;
 			counter = 0;
