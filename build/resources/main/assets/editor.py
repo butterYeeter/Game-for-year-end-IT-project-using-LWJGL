@@ -9,7 +9,7 @@ TILE_SIZE = 16
 class Editor:
     def __init__(self, map_name):
         self.map_name = map_name
-        self.display = pygame.display.set_mode((700, 700))
+        self.display = pygame.display.set_mode((900, 700))
         self.clock = pygame.time.Clock()
 
         self.blocks = {"map": []}
@@ -23,7 +23,7 @@ class Editor:
             self.block_images.append(block[4])
             block.remove(block[4])
 
-        self.tiles = ["tile01.png"]
+        self.tiles = ["tile01.png", "tile02.png", "tile03.png", "tile04.png", "tile05.png", "tile06.png", "tile07.png", "tile08.png", "tile09.png", "tile10.png", "tile11.png", "tile12.png", "tile13.png", "tile14.png", "tile15.png", "tile16.png", "tile17.png", "tile18.png", "tile19.png", "tile20.png", "tile21.png", "tile22.png"]
 
         self.clicking = False
         self.select_image = None
@@ -33,7 +33,7 @@ class Editor:
 
         self.gui_manager = GuiManager([[]], [True])
         for i, tile_type in enumerate(self.tiles):
-            self.gui_manager.gui_elements[0].append(Button(i*60, 10, tile_type, select_image,
+            self.gui_manager.gui_elements[0].append(Button(i*40, 10, tile_type, select_image,
                 pygame.image.load(tile_type).get_width()*2, pygame.image.load(tile_type).get_height()*2, should_div=False))
 
 
