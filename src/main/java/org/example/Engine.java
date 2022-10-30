@@ -91,7 +91,7 @@ public class Engine {
 		{
 			fps = 1.0 / deltaT * counter;
 			//fps = Math.round((fps * 10000)) / 10000;
-			title = "wow a game\t" + fps;
+			title = "wow a game wow alfdjs aldsjflksa\t" + fps;
 			glfwSetWindowTitle(window, title);
 			lastTime = crntTime;
 			counter = 0;
